@@ -12,17 +12,20 @@ export const createUser = async (user: any): Promise<User> => {
 };
 
 export const fetchUser = async (email: string): Promise<User | null> => {
-  const user = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
-  return user;
+  const user = await prisma.$queryRaw<
+    User[]
+  >`SELECT * FROM "User" WHERE email = ${email}`;
+  // const user = await prisma.user.findUnique({
+  //   where: {
+  //     email: email,
+  //   },
+  // });
+  return user[0];
 };
 
 export const updatePassword = async (
   email: string,
-  user: any
+  user: any,
 ): Promise<User | null> => {
   const updatedPassword = await prisma.user.update({
     where: {
