@@ -1,5 +1,4 @@
 import { FC, useEffect } from "react";
-import Container from "react-bootstrap/Container";
 import { useAuth } from "../../hooks/useAuth";
 
 const Home: FC = () => {
@@ -22,9 +21,17 @@ const Home: FC = () => {
   }, [login]);
 
   return (
-    <Container fluid>
-      <div>Hello world vite Akash Tyagi</div>
-    </Container>
+    <div className="home-welcome-screen">
+      <div className="home-welcome-title">
+        Welcome to Contact Management App
+      </div>
+      <div className="home-welcome-subtitle">
+        Effortlessly manage your contacts, stay organized, and connect with
+        ease.
+        <br />
+        Start exploring the features now!
+      </div>
+    </div>
   );
 };
 

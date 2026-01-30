@@ -1,15 +1,16 @@
 import { FC } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
+import Header from "../header/Header";
 
 const Layout: FC = () => {
   return (
-    <Container>
+    <Container fluid>
       <Col>
         <Row>
-          <header>Header</header>
+          <Header />
         </Row>
         <Row>
           <Outlet />
