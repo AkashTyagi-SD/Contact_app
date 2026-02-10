@@ -1,8 +1,14 @@
-import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Form, Button, Spinner } from "react-bootstrap";
+import { useNavigate } from "react-router";
 import AuthLayout from "../auth-layout/AuthLayout";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { loginAction } from "../../store/slices/auth/auth.slice";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, loading } = useAppSelector((state) => state.auth);
   const [validated, setValidated] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -13,7 +19,7 @@ const Login = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (event: {
+  const handleSubmit = async (event: {
     currentTarget: any;
     preventDefault: () => void;
     stopPropagation: () => void;
@@ -24,12 +30,17 @@ const Login = () => {
     if (formEl.checkValidity() === false) {
       event.stopPropagation();
     } else {
-      console.log("Login Data:", form);
-      // call login API here
+      await dispatch(loginAction(form));
     }
-
     setValidated(true);
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      // Redirect to home or dashboard after successful login
+      navigate("/");
+    }
+  }, [isAuthenticated]);
 
   return (
     <AuthLayout
@@ -88,8 +99,9 @@ const Login = () => {
           type="submit"
           className="w-100 mb-3"
           style={{ backgroundColor: "#8b8cf8", borderColor: "#8b8cf8" }}
+          disabled={loading}
         >
-          Log In
+          {loading ? <Spinner size="sm" /> : "Login"}
         </Button>
 
         <div className="text-center">

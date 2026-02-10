@@ -5,59 +5,100 @@ import AuthLayout from "../auth-layout/AuthLayout";
 const ForgotPassword = () => {
   const [validated, setValidated] = useState(false);
   const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState<"EMAIL" | "OTP">("EMAIL");
 
-  const handleSubmit = (event: {
-    currentTarget: any;
-    preventDefault: () => void;
-    stopPropagation: () => void;
-  }) => {
-    const formEl = event.currentTarget;
+  const handleEmailSubmit = async (event: any) => {
     event.preventDefault();
+    const formEl = event.currentTarget;
 
     if (formEl.checkValidity() === false) {
       event.stopPropagation();
-    } else {
-      console.log("Reset email:", email);
-      // call forgot-password API here
+      setValidated(true);
+      return;
     }
 
-    setValidated(true);
+    try {
+      // 🔥 Call verify email / forgot password API
+      console.log("Verify email:", email);
+
+      // await authService.forgotPassword(email);
+
+      // ✅ On success → show OTP screen
+      setStep("OTP");
+      setValidated(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleOtpSubmit = async (event: any) => {
+    event.preventDefault();
+
+    try {
+      console.log("Verify OTP:", otp);
+
+      // await authService.verifyOtp({ email, otp });
+
+      // 👉 navigate to reset password page
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <AuthLayout
-      title="Forgot your password?"
+      title={step === "EMAIL" ? "Forgot your password?" : "Verify OTP"}
       subtitle={
-        <>
-          Remember password? <a href="/login">Sign in</a>
-        </>
+        step === "EMAIL" ? (
+          <>
+            Remember password? <a href="/login">Sign in</a>
+          </>
+        ) : (
+          <>
+            OTP sent to <strong>{email}</strong>
+          </>
+        )
       }
     >
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group className="mb-4">
-          <Form.Control
-            required
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Form.Control.Feedback type="invalid">
-            Please enter a valid email address
-          </Form.Control.Feedback>
-        </Form.Group>
+      {step === "EMAIL" && (
+        <Form noValidate validated={validated} onSubmit={handleEmailSubmit}>
+          <Form.Group className="mb-4">
+            <Form.Control
+              required
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <Form.Control.Feedback type="invalid">
+              Please enter a valid email address
+            </Form.Control.Feedback>
+          </Form.Group>
 
-        <Button
-          type="submit"
-          className="w-100"
-          style={{
-            backgroundColor: "#6355e8",
-            borderColor: "#6355e8",
-          }}
-        >
-          Verify Email
-        </Button>
-      </Form>
+          <Button type="submit" className="w-100">
+            Verify Email
+          </Button>
+        </Form>
+      )}
+
+      {step === "OTP" && (
+        <Form onSubmit={handleOtpSubmit}>
+          <Form.Group className="mb-4">
+            <Form.Control
+              required
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+            />
+          </Form.Group>
+
+          <Button type="submit" className="w-100">
+            Verify OTP
+          </Button>
+        </Form>
+      )}
     </AuthLayout>
   );
 };

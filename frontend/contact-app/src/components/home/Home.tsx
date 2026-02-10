@@ -1,24 +1,20 @@
-import { FC, useEffect } from "react";
-import { useAuth } from "../../hooks/useAuth";
+import { FC } from "react";
+import { useAppSelector } from "../../store/hooks";
 
 const Home: FC = () => {
-  const { login } = useAuth();
+  const authStore = useAppSelector((state) => state.auth);
+  const { isAuthenticated } = authStore;
 
-  useEffect(() => {
-    const performLogin = async () => {
-      try {
-        const response = await login({
-          email: "akashtyagi245205@gmail.com",
-          password: "Qazxsw@1234",
-        });
-        console.log("Login successful:", response);
-      } catch (error) {
-        console.error("Login failed:", error);
-      }
-    };
-
-    performLogin();
-  }, [login]);
+  if (isAuthenticated) {
+    return (
+      <div className="home-welcome-screen">
+        <div className="home-welcome-title">
+          Welcome back to Contact Management App. You can manage your contacts
+          here.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home-welcome-screen">

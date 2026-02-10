@@ -28,7 +28,3 @@ export const login = async (
   localStorage.setItem("authToken", response.data.data.token);
   return response.data;
 };
-
-export const logout = () => {
-  localStorage.removeItem("authToken");
-};
