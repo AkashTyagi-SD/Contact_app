@@ -20,7 +20,6 @@ const ForgotPassword = () => {
 
     try {
       // 🔥 Call verify email / forgot password API
-      console.log("Verify email:", email);
 
       // await authService.forgotPassword(email);
 
