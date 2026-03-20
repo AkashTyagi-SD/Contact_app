@@ -6,6 +6,7 @@ import {
   createUser,
   fetchUsersWithEmployeeDetails,
   updatePassword,
+  verifyEmail,
 } from "../services/user.service";
 
 /**
@@ -75,6 +76,27 @@ export const fetchUsersDetails = async (req: Request, res: Response) => {
   }
 };
 
+// This function verifies the email and sends an OTP if the email exists in the database
+export const verifyEmailOfUser = async (req: Request, res: Response) => {
+  try {
+    const { email } = req.body;
+    const verifyData = await verifyEmail(email);
+    if (verifyData) {
+      res.status(200).json({
+        status: true,
+        message: "OTP sent to your email",
+        data: verifyData,
+      });
+    } else {
+      res.status(404).json({ error: "Email not found" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: `Internal Server Error Verify email : ${error}` });
+  }
+};
+/**  */
 export const updatedPassword = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;

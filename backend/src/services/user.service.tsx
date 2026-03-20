@@ -1,5 +1,5 @@
+import { sendMail } from "../utils/mailer";
 import prisma from "../prisma/prisma.client";
-
 import { User } from "@prisma/client";
 
 /**
@@ -11,6 +11,7 @@ export const createUser = async (user: any): Promise<User> => {
   return createdUser;
 };
 
+// Fetches a user by email
 export const fetchUser = async (email: string): Promise<User | null> => {
   const user = await prisma.$queryRaw<
     User[]
@@ -23,6 +24,24 @@ export const fetchUser = async (email: string): Promise<User | null> => {
   return user[0];
 };
 
+// Returns the OTP if user exists, otherwise null
+export const verifyEmail = async (email: string): Promise<object | null> => {
+  const user = await prisma.user.findUnique({ where: { email: email } });
+  if (user) {
+    // Generate 4-digit OTP
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    // Send OTP to user's email
+    await sendMail(
+      email,
+      "Your Verification OTP",
+      `Your OTP for verification is: ${otp}`,
+    );
+    return { isverify: { email: user.email, verified: true }, OTP: otp };
+  }
+  return null;
+};
+
+// Updates the user's password based on their email
 export const updatePassword = async (
   email: string,
   user: any,
@@ -36,6 +55,10 @@ export const updatePassword = async (
   return updatedPassword;
 };
 
+/**
+ * Fetches all users along with their associated employee details.
+ * @returns
+ */
 export const fetchUsersWithEmployeeDetails = async (): Promise<any> => {
   const users = await prisma.user.findMany({
     select: {

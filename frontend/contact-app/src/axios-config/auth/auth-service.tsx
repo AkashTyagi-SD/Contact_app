@@ -1,6 +1,6 @@
-import { AUTH_URL } from "../common/ApiBaseUrl";
-import { CommonApiResponse } from "../common/CommonModel";
-import axiosInstance from "./axios-instance";
+import { AUTH_URL } from "../../common/ApiBaseUrl";
+import { CommonApiResponse } from "../../common/CommonModel";
+import axiosInstance from "../axios-instance";
 
 export interface LoginPaylod {
   email: string;

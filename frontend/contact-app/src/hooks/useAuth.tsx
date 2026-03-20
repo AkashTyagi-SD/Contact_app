@@ -1,4 +1,4 @@
-import { login, logout } from "../axios-config/auth-service";
+import { login, logout } from "../axios-config/auth/auth-service";
 
 export const useAuth = () => {
   return {
